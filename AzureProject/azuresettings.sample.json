@@ -1,0 +1,17 @@
+{
+  "Azure": {
+    "Translator": {
+      "Key": "<your-translator-key>",
+      "Endpoint": "https://api.cognitive.microsofttranslator.com",
+      "Region": "global"
+    },
+    "Search": {
+      "Key": "<your-search-key>",
+      "Endpoint": "https://api.bing.microsoft.com/",
+      "Region": "global",
+      "WebPath": "v7.0/search",
+      "ImagePath": "v7.0/images/search",
+      "NewsPath": "v7.0/news/search"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+﻿@model AzureProject.Models.Search.Value
+
+<div>
+	<div class="row">
+		<div class="col col-11">
+			<a href="@Model.url">@Model.name</a><br />
+			@Model.displayUrl<br />
+			@Model.snippet
+		</div>
+		<div class="col col-1">
+			@if (Model.thumbnailUrl != null)
+			{
+				<img src="@Model.thumbnailUrl" alt="thumbnail" />
+			}
+		</div>
+		@if (Model.deepLinks != null)
+		{
+
+			<div class="row">
+				@foreach (var deepLink in Model.deepLinks)
+				{
+				<div class="col col-4 offset-1">
+					<a href="@deepLink.url">@deepLink.name</a><br />
+					@deepLink.snippet<br />
+				</div>
+				}
+			</div>
+		}
+	</div>
+</div>
+<hr />

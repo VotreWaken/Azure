@@ -1,0 +1,93 @@
+﻿@model AzureProject.Models.Translator.TranslatorPageModel
+
+@{
+    ViewData["Title"] = "Translator Service";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Cognitive Services. Translator</h1>
+</div>
+
+<div class="container mt-5">
+	<form id="translatorForm" action="" method="get"
+		  class="d-flex flex-column align-items-center justify-content-center">
+		<div class="form-group d-flex flex-row gap-3">
+			<select id="lang-from" name="lang-from" class="form-select" aria-label="Default select example" style="width:240px">
+				@foreach(var lang in Model.LanguageResponse.translation)
+				{
+					if (lang.Key == (Model.FormModel?.LangFrom ?? "en"))
+					{
+						<option selected value="@(lang.Key)">@(lang.Value.name)</option>
+					}
+					else
+					{
+						<option value="@(lang.Key)">@(lang.Value.name)</option>
+					}
+				}
+			</select>
+			<button class="btn btn-outline-secondary" type="button" onclick="swapLanguages()">
+				<i class="bi bi-arrow-left-right"></i>
+			</button>
+			<select id="lang-to" name="lang-to" class="form-select" aria-label="Default select example" style="width:240px">
+				@foreach (var lang in Model.LanguageResponse.translation)
+				{
+					if (lang.Key == (Model.FormModel?.LangTo ?? "uk"))
+					{
+						<option selected value="@(lang.Key)">@(lang.Value.name)</option>
+					}
+					else
+					{
+						<option value="@(lang.Key)">@(lang.Value.name)</option>
+					}
+				}
+			</select>
+		</div>
+		<div class="form-group d-flex flex-row gap-5 mt-3">
+			<div class="form-floating">
+				<textarea class="form-control"
+						  name="text"
+						  placeholder="Input Text"
+						  id="inputTextarea"
+						  style="width:250px; height:250px;">@(Model.FormModel?.Text)</textarea>
+			</div>
+			<button class="btn btn-outline-success" type="submit">
+				<i class="bi bi-translate"></i>
+			</button>
+			<button class="btn btn-outline-danger" type="button" onclick="clearText()">
+				<i class="bi bi-x-lg"></i>
+			</button>
+			<div class="form-floating">
+				<textarea class="form-control" id="translateTextarea" style="width:250px; height:250px;" readonly></textarea>
+				<label for="translateTextarea" id="translateTextareaLabel">@(Model.translatorResponse?[0].translations[0].text)</label>
+			</div>
+		</div>
+	</form>
+</div>
+
+<p>
+	Hello World, its test message to implement a selected text translation 
+</p>
+
+<script>
+	function clearText() {
+		document.getElementById("inputTextarea").value = "";
+		document.getElementById("translateTextareaLabel").innerText = "";
+	}
+
+	function swapLanguages() {
+		let langFromSelect = document.getElementById("lang-from");
+		let langToSelect = document.getElementById("lang-to");
+
+		let langFrom = langFromSelect.value;
+		let langTo = langToSelect.value;
+
+		let translatedText = document.getElementById("translateTextareaLabel").innerText;
+		document.getElementById("inputTextarea").value = translatedText;
+
+		langFromSelect.value = langTo;
+		langToSelect.value = langFrom;
+
+		document.getElementById("translatorForm").submit();
+	}
+</script>
+

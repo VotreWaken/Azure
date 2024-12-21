@@ -1,0 +1,97 @@
+﻿@model AzureProject.Models.Search.WebSearchPageModel
+@{
+	ViewData["Title"] = "Search Page";
+}
+
+<div class="text-center">
+	<h1 class="display-4">Cognitive Search</h1>
+</div>
+
+<div class="alert alert-secondary" role="alert">
+	<ul class="nav nav-pills">
+		<li class="nav-item">
+			<a class="nav-link active" aria-current="page" href="#">Web Pages</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" asp-action="Images">Images</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" asp-action="News">News</a>
+		</li>
+	</ul>
+</div>
+
+<form>
+	<div class="input-group mb-3">
+		<span class="input-group-text" id="search-addon1"><i class="bi bi-search"></i></span>
+		<input type="text" class="form-control" placeholder="Start typing"
+			   name="search-phrase" value="@(Model.WebSearchResponse?.queryContext.originalQuery)"
+			   aria-label="Search" aria-describedby="search-addon">
+		<button class="btn btn-outline-secondary" type="submit">Search</button>
+	</div>
+</form>
+@if (Model.WebSearchResponse != null)
+{
+	<p>
+		На запит
+		<b>
+			@(Model.WebSearchResponse.queryContext.originalQuery)
+		</b>
+		знайдено
+		<i>
+			@(Model.WebSearchResponse.webPages.totalEstimatedMatches)
+		</i>
+		результатiв
+	</p>
+
+	int n = 1 + Model.PerPage * (Model.PageNumber - 1);
+	@foreach (var item in Model.WebSearchResponse.webPages.value)
+	{
+		<span>@(n++)</span>
+		@Html.DisplayFor(m => item, "WebSearchItem")
+	}
+
+	<!-- Pagginator -->
+	int p1 = Model.PageNumber <= 2 ? 1 : Model.PageNumber - 1;
+	int p2 = Model.PageNumber <= 2 ? 2 : Model.PageNumber;
+	int p3 = Model.PageNumber <= 2 ? 3 : Model.PageNumber + 1;
+	String perPageAddon = Model.PerPage == 10 ? "" : $"&perpage={Model.PerPage}";
+
+	<nav aria-label="Page navigation example">
+		<ul class="pagination">
+			<!-- First Page Button -->
+			<li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+				<a class="page-link" href="@(Model.PageNumber == 1 ? "#" : $"?search-phrase={Model.WebSearchResponse.queryContext.originalQuery}&page=1")" aria-label="First">
+					<span aria-hidden="true">&laquo;</span>
+				</a>
+			</li>
+			<!-- Previous Page Button -->
+			<li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+				<a class="page-link" href="@(Model.PageNumber == 1 ? "#" : $"?search-phrase={Model.WebSearchResponse.queryContext.originalQuery}&page={Model.PageNumber - 1}")" aria-label="Previous">
+					<span aria-hidden="true">&#8249;</span>
+				</a>
+			</li>
+			<li class="page-item @(Model.PageNumber == 1 ? "active" :"")">
+				<a class="page-link"
+				   href="@(Model.PageNumber == 1 ? "#" : $"?search-phrase={Model.WebSearchResponse.queryContext.originalQuery}&page={Model.PageNumber-1}{perPageAddon}")">@p1</a>
+			</li>
+			<li class="page-item @(Model.PageNumber != 1 ? "active" :"")">
+				<a class="page-link"
+				   href="@(Model.PageNumber == 1 ? $"?search-phrase={Model.WebSearchResponse.queryContext.originalQuery}&page=2{perPageAddon}" : "#" )">@p2</a>
+			</li>
+			<li class="page-item">
+				<a class="page-link"
+				   href="?search-phrase=@(Model.WebSearchResponse.queryContext.originalQuery)&page=@(Model.PageNumber == 1 ? 3 : Model.PageNumber + 1 )@perPageAddon">@p3</a>
+			</li>
+			<!-- Next Page Button -->
+			<li class="page-item">
+				<a class="page-link" href="@(Model.WebSearchResponse.queryContext.originalQuery != null ? $"?search-phrase={Model.WebSearchResponse.queryContext.originalQuery}&page={Model.PageNumber + 1}" : "#")" aria-label="Next">
+					<span aria-hidden="true">&#8250;</span>
+				</a>
+			</li>
+		</ul>
+	</nav>
+}
+
+@ViewData["config"]
+
